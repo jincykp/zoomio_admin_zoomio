@@ -36,6 +36,7 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
   late TextEditingController complianceDocumentController;
   late TextEditingController pollutionCertificateController;
   late TextEditingController pollutionExpiryDateController;
+  late TextEditingController aboutVehicleController;
 
   DateTime? insuranceExpiryDate;
   DateTime? pollutionExpiryDate; //  for pollution expiry date
@@ -84,6 +85,8 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
         TextEditingController(text: widget.vehicless.insurancePolicyNumber);
     pollutionCertificateController = TextEditingController(
         text: widget.vehicless.pollutionCertificateNumber);
+    aboutVehicleController =
+        TextEditingController(text: widget.vehicless.aboutVehicle);
 
     // Initialize other controllers as needed
     baseFareController = TextEditingController(
@@ -470,6 +473,21 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                     ],
                   ),
                   const SizedBox(height: 20),
+                  TextFormField(
+                    controller:
+                        aboutVehicleController, // Controller for aboutVehicle
+                    decoration: InputDecoration(
+                      labelText: 'About Vehicle',
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please provide details about the vehicle';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -568,8 +586,9 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                                 double.parse(perKilometerChargeController.text),
                             vehicleImages:
                                 selectedVehicleImages, // Updated images
-                            documentImages:
-                                selectedDocumentImages, // Updated documents
+                            documentImages: selectedDocumentImages,
+                            aboutVehicle: aboutVehicleController
+                                .text, // Updated documents
                           );
                           print("update pressed");
                           // Call the update method from the provider

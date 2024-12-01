@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:zoomio_adminzoomio/presentaions/driver_screens/drivers_list.dart';
 import 'package:zoomio_adminzoomio/presentaions/provider/theme_provider.dart';
+import 'package:zoomio_adminzoomio/presentaions/signup_screen/sign.dart';
 import 'package:zoomio_adminzoomio/presentaions/styles/styles.dart';
 import 'package:zoomio_adminzoomio/presentaions/vehicle/add_vehicle.dart';
 import 'package:zoomio_adminzoomio/presentaions/vehicle/default_tabbar_screen.dart';
@@ -22,11 +25,12 @@ class HomeScreen extends StatelessWidget {
             final items = [
               {'icon': Icons.dashboard, 'title': 'Dash Board'},
               {'icon': Icons.person, 'title': 'Users'},
-              {'icon': Icons.directions_car, 'title': 'Drivers'},
+              {'icon': Icons.group, 'title': 'Drivers'},
               {'icon': Icons.bike_scooter, 'title': 'Vehicles'},
               {'icon': Icons.attach_money, 'title': 'Revenue'},
               {'icon': Icons.emoji_transportation, 'title': 'All rides'},
               {'icon': Icons.dark_mode, 'title': 'Theme'},
+              {'icon': Icons.logout_outlined, 'title': 'log out'},
             ];
 
             return ListTile(
@@ -45,7 +49,7 @@ class HomeScreen extends StatelessWidget {
           },
           separatorBuilder: (context, index) =>
               const Divider(), // Add Divider between items
-          itemCount: 7, // Number of list items
+          itemCount: 8, // Number of list items
         ),
       ),
       // Adding the FloatingActionButton
@@ -72,7 +76,8 @@ class HomeScreen extends StatelessWidget {
         Navigator.pushNamed(context, '/users');
         break;
       case 2:
-        Navigator.pushNamed(context, '/drivers');
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const DriversListScreen()));
         break;
       case 3:
         Navigator.push(
@@ -88,6 +93,45 @@ class HomeScreen extends StatelessWidget {
         break;
       case 6:
         Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+        break;
+      case 7:
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                "Logout Confirmation",
+                style: GoogleFonts.alikeAngular(fontWeight: FontWeight.bold),
+              ),
+              content: const Text(
+                "Are you sure you want to logout?",
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    // Perform logout logic here (e.g., FirebaseAuth sign out)
+                    // await auth.signOut();
+                    // Navigate to the sign-in screen
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SignInScreen(),
+                      ),
+                    );
+                  },
+                  child: const Text("Logout"),
+                ),
+              ],
+            );
+          },
+        );
         break;
     }
   }

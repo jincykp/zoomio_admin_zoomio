@@ -20,6 +20,7 @@ class CustomDropdownField<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButtonFormField<T>(
       value: value,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
         labelText: labelText,
         border: const OutlineInputBorder(

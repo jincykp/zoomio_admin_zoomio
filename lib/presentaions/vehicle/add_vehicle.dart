@@ -33,6 +33,7 @@ class _VehicleAddScreenState extends State<VehicleAddScreen> {
   final complianceDocumentController = TextEditingController();
   final pollutionCertificateController = TextEditingController();
   final pollutionExpiryDateController = TextEditingController();
+  final aboutVehicleController = TextEditingController();
   DateTime? insuranceExpiryDate;
   DateTime? pollutionExpiryDate; //  for pollution expiry date
   List<String> selectedVehicleImages = [];
@@ -65,7 +66,7 @@ class _VehicleAddScreenState extends State<VehicleAddScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Vehicle Details"),
+        title: const Text("Add Vehicle's Details"),
         backgroundColor: ThemeColors.primaryColor,
       ),
       body: Padding(
@@ -405,6 +406,17 @@ class _VehicleAddScreenState extends State<VehicleAddScreen> {
                     ],
                   ),
                   const SizedBox(height: 20),
+                  CustomTextField(
+                    controller: aboutVehicleController,
+                    labelText: "About Vehicle",
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the details about vehicle ';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -499,16 +511,22 @@ class _VehicleAddScreenState extends State<VehicleAddScreen> {
                                 selectedVehicleImages, // Add uploaded image URLs
                             documentImages:
                                 selectedDocumentImages, // Add uploaded document URLs
+                            aboutVehicle: aboutVehicleController
+                                .text, // Capture the aboutVehicle text
                           );
+
                           Provider.of<VehicleProvider>(context, listen: false)
                               .addVehicle(newVehicle);
 
                           await addVehicle(newVehicle);
+
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                backgroundColor: Colors.green,
-                                content: Text('Vehicle added successfully!')),
+                              backgroundColor: Colors.green,
+                              content: Text('Vehicle added successfully!'),
+                            ),
                           );
+
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

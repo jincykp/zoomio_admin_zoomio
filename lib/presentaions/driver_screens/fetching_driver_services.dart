@@ -10,7 +10,7 @@ class DriverAdminProvider with ChangeNotifier {
   Future<void> fetchDrivers() async {
     try {
       final querySnapshot =
-          await FirebaseFirestore.instance.collection('drivers').get();
+          await FirebaseFirestore.instance.collection('driverProfiles').get();
       _drivers = querySnapshot.docs
           .map(
               (doc) => ProfileModel.fromMap(doc.data() as Map<String, dynamic>))

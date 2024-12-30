@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:zoomio_adminzoomio/presentaions/driver_screens/fetching_services.dart';
+import 'package:zoomio_adminzoomio/presentaions/driver_screens/fetching_driver_services.dart';
+import 'package:zoomio_adminzoomio/presentaions/driver_screens/driver_details.dart';
 import 'package:zoomio_adminzoomio/presentaions/styles/styles.dart';
 
 class DriversListScreen extends StatelessWidget {
@@ -41,6 +42,15 @@ class DriversListScreen extends StatelessWidget {
                   final driver = provider?.drivers[index];
                   return Card(
                     child: ListTile(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                DriverProfileScreen(profile: driver),
+                          ),
+                        );
+                      },
                       leading: CircleAvatar(
                         radius: 35,
                         backgroundImage: driver?.profileImageUrl != null

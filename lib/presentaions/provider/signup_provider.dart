@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:zoomio_adminzoomio/data/services/auth_services.dart';
+import 'package:zoomio_adminzoomio/presentaions/home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
-
   bool _isLoading = false;
   String? _signUpMessage;
 
@@ -24,13 +25,15 @@ class SignUpProvider with ChangeNotifier {
       print(message); // Log the success message
 
       if (message == "Sign-up successful") {
-        // Show a success message in a SnackBar
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text("Account created successfully! Please log in.")),
-        );
+        // Save login status to SharedPreferences
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setBool('isLoggedIn', true);
 
-        // Optionally navigate to the login screen
+        // Navigate to HomeScreen after successful signup
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(message ?? "An unknown error occurred")),

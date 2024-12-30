@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zoomio_adminzoomio/firebase_options.dart';
-import 'package:zoomio_adminzoomio/presentaions/driver_screens/fetching_services.dart';
+import 'package:zoomio_adminzoomio/presentaions/driver_screens/fetching_driver_services.dart';
 import 'package:zoomio_adminzoomio/presentaions/provider/signin_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/provider/signup_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/provider/theme_provider.dart';
@@ -10,7 +10,8 @@ import 'package:zoomio_adminzoomio/presentaions/provider/vehicle_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/signup_screen/sign_up.dart';
 import 'package:zoomio_adminzoomio/presentaions/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zoomio_adminzoomio/presentaions/home_screen.dart'; // Import the HomeScreen
+import 'package:zoomio_adminzoomio/presentaions/home_screen.dart';
+import 'package:zoomio_adminzoomio/presentaions/user_screens/user_provider.dart'; // Import the HomeScreen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<SignUpProvider>(create: (_) => SignUpProvider()),
         ChangeNotifierProvider<SignInProvider>(create: (_) => SignInProvider()),
         ChangeNotifierProvider(create: (_) => DriverAdminProvider()),
+        ChangeNotifierProvider(create: (_) => UserAdminProvider()),
         // Add other providers here if needed
       ],
       child: Consumer<ThemeProvider>(

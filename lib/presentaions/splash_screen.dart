@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zoomio_adminzoomio/presentaions/signup_screen/sign.dart';
-import 'package:zoomio_adminzoomio/presentaions/signup_screen/sign_up.dart';
 import 'package:zoomio_adminzoomio/presentaions/home_screen.dart';
 import 'package:zoomio_adminzoomio/presentaions/styles/styles.dart';
 

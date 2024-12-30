@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zoomio_adminzoomio/data/services/auth_services.dart';
 import 'package:zoomio_adminzoomio/presentaions/home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
@@ -23,7 +24,11 @@ class SignInProvider with ChangeNotifier {
       print(message); // Log the success message
 
       if (message == "Login successful") {
-        // Navigate to the home screen if login is successful
+        // Save login status to SharedPreferences
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setBool('isLoggedIn', true);
+
+        // Navigate to the home screen after successful login
         if (context.mounted) {
           Navigator.pushReplacement(
             context,
@@ -31,7 +36,6 @@ class SignInProvider with ChangeNotifier {
           );
         }
       } else {
-        // Show error message in SnackBar
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(message ?? "An unknown error occurred")),
         );

@@ -5,6 +5,7 @@ import 'package:zoomio_adminzoomio/presentaions/driver_screens/drivers_list.dart
 import 'package:zoomio_adminzoomio/presentaions/provider/theme_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/signup_screen/sign.dart';
 import 'package:zoomio_adminzoomio/presentaions/styles/styles.dart';
+import 'package:zoomio_adminzoomio/presentaions/user_screens/user_list.dart';
 import 'package:zoomio_adminzoomio/presentaions/vehicle/add_vehicle.dart';
 import 'package:zoomio_adminzoomio/presentaions/vehicle/default_tabbar_screen.dart';
 
@@ -73,7 +74,8 @@ class HomeScreen extends StatelessWidget {
         Navigator.pushNamed(context, '/dashboard');
         break;
       case 1:
-        Navigator.pushNamed(context, '/users');
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const UsersListScreen()));
         break;
       case 2:
         Navigator.push(context,

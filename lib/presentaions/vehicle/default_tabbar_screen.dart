@@ -17,7 +17,7 @@ class DefaultTabbarScreen extends StatelessWidget {
           backgroundColor: ThemeColors.primaryColor,
           bottom: const TabBar(tabs: [
             Tab(
-              icon: Icon(Icons.car_crash),
+              icon: Icon(Icons.directions_car),
             ),
             Tab(
               icon: Icon(Icons.bike_scooter),

@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zoomio_adminzoomio/firebase_options.dart';
+import 'package:zoomio_adminzoomio/presentaions/all_rides/trip_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/driver_screens/fetching_driver_services.dart';
 import 'package:zoomio_adminzoomio/presentaions/provider/signin_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/provider/signup_provider.dart';
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<SignInProvider>(create: (_) => SignInProvider()),
         ChangeNotifierProvider(create: (_) => DriverAdminProvider()),
         ChangeNotifierProvider(create: (_) => UserAdminProvider()),
+        ChangeNotifierProvider(create: (context) => TripProvider()),
         // Add other providers here if needed
       ],
       child: Consumer<ThemeProvider>(

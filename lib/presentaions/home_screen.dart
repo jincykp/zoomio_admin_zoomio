@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:zoomio_adminzoomio/presentaions/all_rides/ride_screen.dart';
 import 'package:zoomio_adminzoomio/presentaions/driver_screens/drivers_list.dart';
 import 'package:zoomio_adminzoomio/presentaions/provider/theme_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/signup_screen/sign.dart';
@@ -91,7 +92,8 @@ class HomeScreen extends StatelessWidget {
         Navigator.pushNamed(context, '/revenue');
         break;
       case 5:
-        Navigator.pushNamed(context, '/allRides');
+        Navigator.push(context,
+            (MaterialPageRoute(builder: (context) => const RideScreen())));
         break;
       case 6:
         Provider.of<ThemeProvider>(context, listen: false).toggleTheme();

@@ -1,26 +1,34 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class UserModel {
   final String id;
   final String email;
   final String displayName;
-  final String? photoUrl; // Added photoUrl field
+  final String? photoUrl;
+  final String? phone; // Add the phone field
 
   UserModel({
     required this.id,
     required this.email,
     required this.displayName,
-    this.photoUrl, // Include photoUrl in the constructor
+    this.photoUrl,
+    this.phone, // Initialize the phone field
   });
 
-  // Create UserModel from a map with optional photoUrl
   factory UserModel.fromMap(Map<String, dynamic> map, String id) {
     return UserModel(
       id: id,
       email: map['email'] ?? '',
       displayName: map['displayName'] ?? '',
-      photoUrl: map['photoUrl'], // Map the photoUrl from Firestore
+      photoUrl: map['photoUrl'],
+      phone: map['phone'], // Parse the phone field
     );
   }
 
-  // Getter for photoUrl (this will be used in the UI)
+  factory UserModel.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return UserModel.fromMap(data, doc.id);
+  }
+
   String? get profileImageUrl => photoUrl;
 }

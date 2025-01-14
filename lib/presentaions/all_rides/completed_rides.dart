@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/all_rides/trip_list_view.dart';
 import 'package:zoomio_adminzoomio/presentaions/all_rides/trip_provider.dart';
-import 'package:zoomio_adminzoomio/presentaions/styles/styles.dart';
 
 class CompletedRideScreen extends StatefulWidget {
   const CompletedRideScreen({Key? key}) : super(key: key);
@@ -22,19 +20,6 @@ class _CompletedRideScreenState extends State<CompletedRideScreen> {
     );
   }
 
-  String formatDateTime(String timestamp) {
-    final dateTime = DateTime.parse(timestamp);
-    return DateFormat('dd MMM yyyy, hh:mm a').format(dateTime);
-  }
-
-  String formatPrice(double price) {
-    return NumberFormat.currency(
-      symbol: '₹',
-      decimalDigits: 2,
-      locale: 'en_IN',
-    ).format(price);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +30,19 @@ class _CompletedRideScreenState extends State<CompletedRideScreen> {
           }
 
           if (provider.error != null) {
-            return Center(child: Text(provider.error!));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(provider.error!),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => provider.fetchTrips(),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            );
           }
 
           final completedTrips = provider.completedTrips;
@@ -62,10 +59,11 @@ class _CompletedRideScreenState extends State<CompletedRideScreen> {
           return RefreshIndicator(
             onRefresh: () => provider.fetchTrips(),
             child: ListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 8),
               itemCount: completedTrips.length,
               itemBuilder: (context, index) {
-                final trip = completedTrips[index];
-                return CompletedTripCard(trip: trip);
+                final enhancedTrip = completedTrips[index];
+                return CompletedTripCard(enhancedTrip: enhancedTrip);
               },
             ),
           );

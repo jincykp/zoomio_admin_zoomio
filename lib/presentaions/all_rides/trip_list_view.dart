@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:zoomio_adminzoomio/presentaions/all_rides/enhanced_trip.dart';
 import 'package:zoomio_adminzoomio/presentaions/all_rides/trip_model.dart';
 
 class TripListView extends StatelessWidget {
@@ -35,15 +38,26 @@ class TripListView extends StatelessWidget {
 }
 
 class CompletedTripCard extends StatelessWidget {
-  final Trip trip;
+  final EnhancedTrip enhancedTrip;
 
   const CompletedTripCard({
     Key? key,
-    required this.trip,
+    required this.enhancedTrip,
   }) : super(key: key);
+
+  Future<void> _launchPhone(String phoneNumber) async {
+    final Uri uri = Uri(scheme: 'tel', path: phoneNumber);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final trip = enhancedTrip;
+    final userDetails = enhancedTrip.userDetails;
+    final driverDetails = enhancedTrip.driverDetails;
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       elevation: 2,
@@ -79,6 +93,55 @@ class CompletedTripCard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // User Details Section
+              _buildSectionTitle('User Details', Icons.person),
+              if (userDetails != null) ...[
+                _buildDetailRow(
+                  'Name',
+                  userDetails.displayName,
+                  showCopy: true,
+                ),
+                _buildDetailRow(
+                  'Phone',
+                  userDetails.phone ?? 'N/A', // Use 'N/A' or any default value
+                  onTap: userDetails.phone != null
+                      ? () => _launchPhone(userDetails.phone!)
+                      : null,
+                  showCopy: userDetails.phone != null,
+                ),
+                _buildDetailRow(
+                  'Email',
+                  userDetails.email,
+                  showCopy: true,
+                ),
+              ] else
+                const Text('User details not available'),
+
+              const SizedBox(height: 16),
+              const Divider(),
+
+              // Driver Details Section
+              _buildSectionTitle('Driver Details', Icons.drive_eta),
+              if (driverDetails != null) ...[
+                _buildDetailRow(
+                  'Name',
+                  driverDetails.name,
+                  showCopy: true,
+                ),
+                _buildDetailRow(
+                  'Phone',
+                  driverDetails.contactNumber,
+                  onTap: () => _launchPhone(driverDetails.contactNumber),
+                  showCopy: true,
+                ),
+              ] else
+                const Text('Driver details not available'),
+
+              const SizedBox(height: 16),
+              const Divider(),
+
+              // Location Details
+              _buildSectionTitle('Trip Details', Icons.location_on),
               _buildLocationInfo(
                 'Pickup Location',
                 trip.pickupLocation,
@@ -92,48 +155,92 @@ class CompletedTripCard extends StatelessWidget {
                 Icons.location_on,
                 Colors.red,
               ),
+
+              // Trip Status and Payment
+              const SizedBox(height: 16),
+              const Divider(),
+              _buildSectionTitle('Status & Payment', Icons.info_outline),
+              _buildDetailRow('Trip Status', trip.status),
+              // _buildDetailRow('Payment Method', trip.paymentMethod ?? 'N/A'),
+
               if (trip.vehicleDetails != null) ...[
                 const SizedBox(height: 16),
                 const Divider(),
-                const SizedBox(height: 8),
-                const Text(
-                  'Vehicle Details',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    // color: Colors.grey[800],
-                  ),
-                ),
-                const SizedBox(height: 8),
+                _buildSectionTitle('Vehicle Details', Icons.directions_car),
                 ...trip.vehicleDetails!.entries.map(
-                  (e) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: 170,
-                          child: Text(
-                            '${_capitalizeFirstLetter(e.key)}: ',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            e.value.toString(),
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ),
-                      ],
-                    ),
+                  (e) => _buildDetailRow(
+                    _capitalizeFirstLetter(e.key),
+                    e.value.toString(),
                   ),
                 ),
               ],
             ],
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Icon(icon, size: 20),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(
+    String label,
+    String value, {
+    VoidCallback? onTap,
+    bool showCopy = false,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              '$label:',
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: onTap,
+              child: Text(
+                value,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: onTap != null ? Colors.blue : null,
+                  decoration: onTap != null ? TextDecoration.underline : null,
+                ),
+              ),
+            ),
+          ),
+          if (showCopy)
+            IconButton(
+              icon: const Icon(Icons.copy, size: 18),
+              onPressed: () async {
+                await Clipboard.setData(ClipboardData(text: value));
+              },
+            ),
         ],
       ),
     );
@@ -148,7 +255,6 @@ class CompletedTripCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        // color: Colors.grey[100],
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -165,7 +271,6 @@ class CompletedTripCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    // color: Colors.grey[600],
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -192,9 +297,19 @@ class CompletedTripCard extends StatelessWidget {
   String formatPrice(double price) {
     return NumberFormat.currency(
       symbol: '₹',
-      decimalDigits: 2, // Set to 2 decimal places
+      decimalDigits: 2,
       locale: 'en_IN',
     ).format(price);
+  }
+
+  String formatDuration(int? duration) {
+    if (duration == null) return 'N/A';
+    final hours = duration ~/ 60;
+    final minutes = duration % 60;
+    if (hours > 0) {
+      return '$hours hr ${minutes > 0 ? '$minutes min' : ''}';
+    }
+    return '$minutes min';
   }
 
   String _capitalizeFirstLetter(String text) {

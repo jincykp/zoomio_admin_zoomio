@@ -1,28 +1,27 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:zoomio_adminzoomio/presentaions/all_rides/enhanced_trip.dart';
 import 'package:zoomio_adminzoomio/presentaions/all_rides/trip_model.dart';
+import 'package:zoomio_adminzoomio/presentaions/driver_screens/driver_profilemodel.dart';
+import 'package:zoomio_adminzoomio/presentaions/user_screens/user_model.dart';
 
 class TripProvider with ChangeNotifier {
   final DatabaseReference _tripRef = FirebaseDatabase.instance.ref('bookings');
-  List<Trip> _trips = [];
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  List<EnhancedTrip> _trips = [];
   bool _isLoading = false;
   String? _error;
 
-  List<Trip> get trips => _trips;
+  List<EnhancedTrip> get trips => _trips;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  List<Trip> get completedTrips {
-    final completed = _trips.where((trip) {
-      // Debug print for each trip's status
-      print('Trip ID: ${trip.tripId}, Status: ${trip.status}');
-      return trip.status.toLowerCase() == 'trip completed';
-    }).toList();
-
-    // Debug print total counts
-    print('Total trips: ${_trips.length}');
-    print('Completed trips found: ${completed.length}');
-    return completed;
+  List<EnhancedTrip> get completedTrips {
+    return _trips
+        .where((trip) => trip.status.toLowerCase() == 'trip completed')
+        .toList();
   }
 
   Future<void> fetchTrips() async {
@@ -36,46 +35,80 @@ class TripProvider with ChangeNotifier {
         _trips = [];
         final data = snapshot.value as Map<dynamic, dynamic>;
 
-        data.forEach((key, value) {
-          if (value is Map) {
-            final tripData = Map<String, dynamic>.from(value);
-            // Debug print raw trip data
-            print('Raw trip data for $key: $tripData');
-            _trips.add(Trip.fromJson(tripData, key.toString()));
-          }
-        });
+        for (var entry in data.entries) {
+          final key = entry.key.toString();
+          final value = Map<String, dynamic>.from(entry.value as Map);
+          final trip = Trip.fromJson(value, key);
 
-        // Sort by timestamp, newest first
-        _trips.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+          final userDetails = await _fetchUserDetails(trip.userId);
+          final driverDetails = trip.driverId != null
+              ? await _fetchDriverDetails(trip.driverId!)
+              : null;
 
-        // Debug print all trips after parsing
-        for (var trip in _trips) {
-          print('Parsed trip - ID: ${trip.tripId}, Status: ${trip.status}');
+          _trips.add(EnhancedTrip(
+              trip: trip,
+              userDetails: userDetails,
+              driverDetails: driverDetails));
         }
+
+        // Sort trips by timestamp (newest first)
+        _trips.sort((a, b) => b.timestamp.compareTo(a.timestamp));
       }
     } catch (e) {
       _error = 'Failed to fetch trips: $e';
-      print('Error fetching trips: $e');
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
+  Future<UserModel?> _fetchUserDetails(String userId) async {
+    try {
+      final doc = await _firestore.collection('users').doc(userId).get();
+      if (doc.exists) {
+        return UserModel.fromFirestore(doc);
+      }
+    } catch (e) {
+      print('Error fetching user details for $userId: $e');
+    }
+    return null;
+  }
+
+  Future<ProfileModel?> _fetchDriverDetails(String driverId) async {
+    try {
+      final doc =
+          await _firestore.collection('driverProfiles').doc(driverId).get();
+      if (doc.exists) {
+        return ProfileModel.fromFirestore(doc);
+      }
+    } catch (e) {
+      print('Error fetching driver details for $driverId: $e');
+    }
+    return null;
+  }
+
   void startRealtimeUpdates() {
     _tripRef.onValue.listen(
-      (event) {
+      (event) async {
         if (event.snapshot.exists) {
           _trips = [];
           final data = event.snapshot.value as Map<dynamic, dynamic>;
 
-          data.forEach((key, value) {
-            if (value is Map) {
-              final tripData = Map<String, dynamic>.from(value);
-              print('Realtime update - Raw trip data for $key: $tripData');
-              _trips.add(Trip.fromJson(tripData, key.toString()));
-            }
-          });
+          for (var entry in data.entries) {
+            final key = entry.key.toString();
+            final value = Map<String, dynamic>.from(entry.value as Map);
+            final trip = Trip.fromJson(value, key);
+
+            final userDetails = await _fetchUserDetails(trip.userId);
+            final driverDetails = trip.driverId != null
+                ? await _fetchDriverDetails(trip.driverId!)
+                : null;
+
+            _trips.add(EnhancedTrip(
+                trip: trip,
+                userDetails: userDetails,
+                driverDetails: driverDetails));
+          }
 
           _trips.sort((a, b) => b.timestamp.compareTo(a.timestamp));
           notifyListeners();
@@ -83,7 +116,6 @@ class TripProvider with ChangeNotifier {
       },
       onError: (error) {
         _error = 'Error in realtime updates: $error';
-        print('Realtime update error: $error');
         notifyListeners();
       },
     );

@@ -45,7 +45,7 @@ class _RideScreenState extends State<RideScreen> {
           children: [
             const CompletedRideScreen(),
             UserCancelledScreen(),
-            const DriverCancelledRideScreen(),
+            DriverCancelledRideScreen(),
           ],
         ),
       ),

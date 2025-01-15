@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zoomio_adminzoomio/firebase_options.dart';
 import 'package:zoomio_adminzoomio/presentaions/all_rides/completed_ride_screens/completed_trip_provider.dart';
+import 'package:zoomio_adminzoomio/presentaions/all_rides/driver_cancelled_screens/driver_cancelled_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/all_rides/user_cancelled_screens/user_cancelled_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/driver_screens/fetching_driver_services.dart';
 import 'package:zoomio_adminzoomio/presentaions/provider/signin_provider.dart';
@@ -40,7 +41,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserAdminProvider()),
         ChangeNotifierProvider(create: (context) => TripProvider()),
         ChangeNotifierProvider(create: (context) => CancelledTripProvider()),
-        // Add other providers here if needed  CancelledTripProvider
+        ChangeNotifierProvider(create: (context) => DriverCancelledProvider()),
+        // Add other providers here if needed  CancelledTripProvider DriverCancelledProvider
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {

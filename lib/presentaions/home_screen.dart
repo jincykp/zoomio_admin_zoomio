@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:zoomio_adminzoomio/presentaions/all_rides/ride_screen.dart';
+import 'package:zoomio_adminzoomio/presentaions/all_rides/tab_controller_screen.dart';
 import 'package:zoomio_adminzoomio/presentaions/driver_screens/drivers_list.dart';
 import 'package:zoomio_adminzoomio/presentaions/provider/theme_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/signup_screen/sign.dart';

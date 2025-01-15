@@ -3,39 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zoomio_adminzoomio/presentaions/all_rides/enhanced_trip.dart';
-import 'package:zoomio_adminzoomio/presentaions/all_rides/trip_model.dart';
-
-class TripListView extends StatelessWidget {
-  final List<Trip> trips;
-  final String emptyMessage;
-
-  const TripListView({
-    Key? key,
-    required this.trips,
-    required this.emptyMessage,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    if (trips.isEmpty) {
-      return Center(child: Text(emptyMessage));
-    }
-    return ListView.builder(
-      itemCount: trips.length,
-      itemBuilder: (context, index) {
-        final trip = trips[index];
-        return ListTile(
-          title: Text(trip.pickupLocation),
-          subtitle: Text(trip.dropOffLocation),
-          trailing: Text(trip.status),
-          onTap: () {
-            // Handle trip click
-          },
-        );
-      },
-    );
-  }
-}
 
 class CompletedTripCard extends StatelessWidget {
   final EnhancedTrip enhancedTrip;
@@ -94,7 +61,7 @@ class CompletedTripCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // User Details Section
-              _buildSectionTitle('User Details', Icons.person),
+              _buildSectionTitle('Customer Details', Icons.person),
               if (userDetails != null) ...[
                 _buildDetailRow(
                   'Name',

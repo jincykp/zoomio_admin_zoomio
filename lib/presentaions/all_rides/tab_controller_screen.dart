@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zoomio_adminzoomio/presentaions/all_rides/completed_rides.dart';
-import 'package:zoomio_adminzoomio/presentaions/all_rides/driver_cancelled_rides.dart';
-import 'package:zoomio_adminzoomio/presentaions/all_rides/trip_model.dart';
-import 'package:zoomio_adminzoomio/presentaions/all_rides/trip_provider.dart';
-import 'package:zoomio_adminzoomio/presentaions/all_rides/user_cancelled_rides.dart';
+import 'package:zoomio_adminzoomio/presentaions/all_rides/completed_ride_screens/completed_rides.dart';
+import 'package:zoomio_adminzoomio/presentaions/all_rides/driver_cancelled_screens/driver_cancelled_rides.dart';
+import 'package:zoomio_adminzoomio/presentaions/all_rides/completed_ride_screens/completed_trip_provider.dart';
+import 'package:zoomio_adminzoomio/presentaions/all_rides/user_cancelled_screens/user_cancelled_ride_screen.dart';
 import 'package:zoomio_adminzoomio/presentaions/styles/styles.dart';
 
 class RideScreen extends StatefulWidget {

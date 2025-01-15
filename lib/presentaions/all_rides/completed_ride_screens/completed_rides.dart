@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zoomio_adminzoomio/presentaions/all_rides/trip_list_view.dart';
-import 'package:zoomio_adminzoomio/presentaions/all_rides/trip_provider.dart';
+import 'package:zoomio_adminzoomio/presentaions/all_rides/completed_ride_screens/completed_trip_card.dart';
+import 'package:zoomio_adminzoomio/presentaions/all_rides/completed_ride_screens/completed_trip_provider.dart';
 
 class CompletedRideScreen extends StatefulWidget {
   const CompletedRideScreen({Key? key}) : super(key: key);

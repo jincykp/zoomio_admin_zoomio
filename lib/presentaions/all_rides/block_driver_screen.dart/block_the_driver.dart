@@ -11,6 +11,7 @@ class DriverManagementScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: ThemeColors.primaryColor,
         title: const Text(
           'Driver Management',
           style: TextStyle(fontWeight: FontWeight.bold),

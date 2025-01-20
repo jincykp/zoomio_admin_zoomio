@@ -5,15 +5,32 @@ import 'package:zoomio_adminzoomio/presentaions/all_rides/block_driver_screen.da
 import 'package:zoomio_adminzoomio/presentaions/all_rides/tab_controller_screen.dart';
 import 'package:zoomio_adminzoomio/presentaions/driver_screens/drivers_list.dart';
 import 'package:zoomio_adminzoomio/presentaions/provider/theme_provider.dart';
+import 'package:zoomio_adminzoomio/presentaions/revenue_screens/revenue_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/revenue_screens/revenue_screen.dart';
+import 'package:zoomio_adminzoomio/presentaions/revenue_screens/statistics_card.dart';
 import 'package:zoomio_adminzoomio/presentaions/signup_screen/sign.dart';
 import 'package:zoomio_adminzoomio/presentaions/styles/styles.dart';
 import 'package:zoomio_adminzoomio/presentaions/user_screens/user_list.dart';
 import 'package:zoomio_adminzoomio/presentaions/vehicle/add_vehicle.dart';
 import 'package:zoomio_adminzoomio/presentaions/vehicle/default_tabbar_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.microtask(() {
+      context.read<RevenueProvider>().fetchData();
+      context.read<RevenueProvider>().startRealtimeUpdates();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +38,7 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         // foregroundColor: ThemeColors.textColor,
         backgroundColor: ThemeColors.primaryColor,
-        title: const Center(child: Text("Home Page")),
+        title: const Center(child: Text("Statistics Overview")),
       ),
       drawer: Drawer(
         child: ListView.separated(
@@ -47,14 +64,68 @@ class HomeScreen extends StatelessWidget {
                 items[index]['title'] as String,
                 style: const TextStyle(color: ThemeColors.primaryColor),
               ),
-              onTap: () {
-                _handleItemTap(context, index);
-              },
+              onTap: () => _handleItemTap(context, index),
             );
           },
           separatorBuilder: (context, index) =>
               const Divider(), // Add Divider between items
           itemCount: 9, // Number of list items
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Consumer<RevenueProvider>(
+          builder: (context, revenueProvider, child) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GridView.count(
+                    crossAxisCount: 2,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: 1.5,
+                    children: [
+                      StatisticsCard(
+                        title: 'Daily Earnings',
+                        amount:
+                            '₹${revenueProvider.dailyRevenue.toStringAsFixed(2)}',
+                        subtitle: '${revenueProvider.dailyTrips} rides',
+                        backgroundColor: Colors.blue[100]!,
+                        icon: Icons.today,
+                      ),
+                      StatisticsCard(
+                        title: 'Weekly Earnings',
+                        amount:
+                            '₹${revenueProvider.weeklyRevenue.toStringAsFixed(2)}',
+                        subtitle: '${revenueProvider.weeklyTrips} rides',
+                        backgroundColor: Colors.green[100]!,
+                        icon: Icons.calendar_view_week,
+                      ),
+                      StatisticsCard(
+                        title: 'Monthly Earnings',
+                        amount:
+                            '₹${revenueProvider.monthlyRevenue.toStringAsFixed(2)}',
+                        subtitle: '${revenueProvider.monthlyTrips} rides',
+                        backgroundColor: Colors.orange[100]!,
+                        icon: Icons.calendar_month,
+                      ),
+                      StatisticsCard(
+                        title: 'Average Per Ride',
+                        amount:
+                            '₹${_calculateAverage(revenueProvider.monthlyRevenue, revenueProvider.monthlyTrips)}',
+                        subtitle: 'This month',
+                        backgroundColor: Colors.purple[100]!,
+                        icon: Icons.auto_graph,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
       // Adding the FloatingActionButton
@@ -71,11 +142,15 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  String _calculateAverage(double total, int count) {
+    if (count == 0) return '0.00';
+    return (total / count).toStringAsFixed(2);
+  }
+
   // Handling the onTap event for the Drawer items
   void _handleItemTap(BuildContext context, int index) {
     switch (index) {
       case 0:
-        Navigator.pushNamed(context, '/dashboard');
         break;
       case 1:
         Navigator.push(context,

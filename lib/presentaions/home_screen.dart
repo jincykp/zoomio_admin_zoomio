@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:zoomio_adminzoomio/presentaions/all_rides/block_driver_screen.dart/block_the_driver.dart';
 import 'package:zoomio_adminzoomio/presentaions/all_rides/tab_controller_screen.dart';
 import 'package:zoomio_adminzoomio/presentaions/driver_screens/drivers_list.dart';
 import 'package:zoomio_adminzoomio/presentaions/provider/theme_provider.dart';
+import 'package:zoomio_adminzoomio/presentaions/revenue_screens/revenue_screen.dart';
 import 'package:zoomio_adminzoomio/presentaions/signup_screen/sign.dart';
 import 'package:zoomio_adminzoomio/presentaions/styles/styles.dart';
 import 'package:zoomio_adminzoomio/presentaions/user_screens/user_list.dart';
@@ -29,8 +31,9 @@ class HomeScreen extends StatelessWidget {
               {'icon': Icons.person, 'title': 'Users'},
               {'icon': Icons.group, 'title': 'Drivers'},
               {'icon': Icons.bike_scooter, 'title': 'Vehicles'},
-              {'icon': Icons.attach_money, 'title': 'Revenue'},
               {'icon': Icons.emoji_transportation, 'title': 'All rides'},
+              {'icon': Icons.attach_money, 'title': 'Revenue'},
+              {'icon': Icons.cancel, 'title': 'Cancelled Rides'},
               {'icon': Icons.dark_mode, 'title': 'Theme'},
               {'icon': Icons.logout_outlined, 'title': 'log out'},
             ];
@@ -51,7 +54,7 @@ class HomeScreen extends StatelessWidget {
           },
           separatorBuilder: (context, index) =>
               const Divider(), // Add Divider between items
-          itemCount: 8, // Number of list items
+          itemCount: 9, // Number of list items
         ),
       ),
       // Adding the FloatingActionButton
@@ -89,16 +92,23 @@ class HomeScreen extends StatelessWidget {
                 builder: (context) => const DefaultTabbarScreen())));
         break;
       case 4:
-        Navigator.pushNamed(context, '/revenue');
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const RideScreen()));
         break;
       case 5:
         Navigator.push(context,
-            (MaterialPageRoute(builder: (context) => const RideScreen())));
+            (MaterialPageRoute(builder: (context) => const RevenueScreen())));
         break;
       case 6:
-        Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const DriverManagementScreen()));
         break;
       case 7:
+        Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+        break;
+      case 8:
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -120,13 +130,11 @@ class HomeScreen extends StatelessWidget {
                 TextButton(
                   onPressed: () async {
                     Navigator.of(context).pop();
-                    // Perform logout logic here (e.g., FirebaseAuth sign out)
-                    // await auth.signOut();
-                    // Navigate to the sign-in screen
+
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SignInScreen(),
+                        builder: (context) => const SignInScreen(),
                       ),
                     );
                   },

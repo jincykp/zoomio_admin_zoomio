@@ -17,9 +17,10 @@ class _CarTabScreenState extends State<CarTabScreen> {
 
     // Fetching the vehicles data
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       final vehicleProvider =
           Provider.of<VehicleProvider>(context, listen: false);
-      vehicleProvider.fetchVehicles(); // Fetching the vehicles data
+      vehicleProvider.fetchVehicles();
     });
   }
 
@@ -36,9 +37,10 @@ class _CarTabScreenState extends State<CarTabScreen> {
 
             // Filter vehicles to show only cars
             final carVehicles = vehicleProvider.vehicles
-                .where((vehicle) => vehicle.vehicleType == 'Car')
+                .where((vehicle) =>
+                    vehicle.vehicleType.trim().toLowerCase() == 'car')
                 .toList();
-
+            print('Found ${carVehicles.length} cars');
             if (carVehicles.isEmpty) {
               return const Center(child: Text('No vehicles available.'));
             }

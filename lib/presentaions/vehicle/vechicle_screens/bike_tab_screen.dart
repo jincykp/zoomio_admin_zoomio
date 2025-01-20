@@ -16,9 +16,10 @@ class _BikeTabScreenState extends State<BikeTabScreen> {
 
     // Fetching the vehicles data
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       final vehicleProvider =
           Provider.of<VehicleProvider>(context, listen: false);
-      vehicleProvider.fetchVehicles(); // Fetching the vehicles data
+      vehicleProvider.fetchVehicles();
     });
   }
 
@@ -35,11 +36,11 @@ class _BikeTabScreenState extends State<BikeTabScreen> {
             }
 
             // Filter vehicles to show only bikes
-            final bikeVehicles = vehicleProvider.vehicles.where((vehicle) {
-              print('Vehicle Type: ${vehicle.vehicleType}'); // Add this line
-              return vehicle.vehicleType.toLowerCase() == 'bike';
-            }).toList();
-
+            final bikeVehicles = vehicleProvider.vehicles
+                .where((vehicle) =>
+                    vehicle.vehicleType.trim().toLowerCase() == 'bike')
+                .toList();
+            print('Found ${bikeVehicles.length} bikes');
             // If there are no bikes
             if (bikeVehicles.isEmpty) {
               return const Center(child: Text('No bikes available.'));

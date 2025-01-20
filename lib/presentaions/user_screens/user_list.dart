@@ -18,19 +18,42 @@ class UsersListScreen extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: FutureBuilder(
+      body: FutureBuilder<void>(
         future: userProvider.fetchUsers(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Error: ${snapshot.error}',
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            );
           }
 
           return Consumer<UserAdminProvider>(
             builder: (context, provider, _) {
               if (provider.users.isEmpty) {
-                return const Center(child: Text('No users available.'));
+                return const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.people_outline, size: 48, color: Colors.grey),
+                      SizedBox(height: 16),
+                      Text('No users available.'),
+                    ],
+                  ),
+                );
               }
 
               return ListView.builder(
@@ -38,7 +61,13 @@ class UsersListScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final user = provider.users[index];
                   return Card(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    elevation: 2,
                     child: ListTile(
+                      contentPadding: const EdgeInsets.all(12),
                       leading: CircleAvatar(
                         radius: 35,
                         backgroundImage: user.profileImageUrl != null
@@ -48,8 +77,19 @@ class UsersListScreen extends StatelessWidget {
                             ? const Icon(Icons.person)
                             : null,
                       ),
-                      title: Text(user.displayName),
-                      subtitle: Text(user.email),
+                      title: Text(
+                        user.displayName,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      subtitle: Text(
+                        user.email,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
                     ),
                   );
                 },

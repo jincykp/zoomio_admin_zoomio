@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/all_rides/driver_cancelled_screens/driver_cancelled_provider.dart';
@@ -35,7 +36,6 @@ class _DriverCancelledRideScreenState extends State<DriverCancelledRideScreen> {
               ),
             );
           }
-
           if (provider.error != null) {
             return Center(
               child: Column(
@@ -114,14 +114,16 @@ class _DriverCancelledRideScreenState extends State<DriverCancelledRideScreen> {
 
   Widget _buildUserSection(dynamic booking) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const CircleAvatar(
+        CircleAvatar(
           radius: 24,
-          //  backgroundColor: Colors.grey[200],
-          child: Icon(
-            Icons.person,
-            size: 32,
-          ),
+          backgroundImage: booking.userDetails?['photoUrl'] != null
+              ? NetworkImage(booking.userDetails['photoUrl'])
+              : null,
+          child: booking.userDetails?['photoUrl'] == null
+              ? Icon(Icons.person, size: 32, color: Colors.grey[400])
+              : null,
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -142,20 +144,47 @@ class _DriverCancelledRideScreenState extends State<DriverCancelledRideScreen> {
                   const SizedBox(width: 4),
                   Text(
                     booking.userDetails?['phone'] ?? 'N/A',
-                    // style: TextStyle(color: Colors.grey[600]),
                   ),
                 ],
               ),
               Row(
                 children: [
-                  const Icon(
-                    Icons.email,
-                    size: 16,
+                  Icon(Icons.email, size: 16, color: Colors.grey[600]),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      booking.userDetails?['email'] ?? 'N/A',
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              // Added address row
+              Row(
+                children: [
+                  Icon(Icons.location_on, size: 16, color: Colors.grey[600]),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      booking.userDetails?['address'] ?? 'N/A',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                  ),
+                ],
+              ),
+              // Added join date
+              Row(
+                children: [
+                  Icon(Icons.calendar_today, size: 16, color: Colors.grey[600]),
                   const SizedBox(width: 4),
                   Text(
-                    booking.userDetails?['email'] ?? 'N/A',
-                    //style: TextStyle(color: Colors.grey[600]),
+                    'Joined: ${_formatTimestamp(booking.userDetails?['createdAt'])}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
                   ),
                 ],
               ),
@@ -166,17 +195,33 @@ class _DriverCancelledRideScreenState extends State<DriverCancelledRideScreen> {
     );
   }
 
+// Helper function to format timestamp
+  String _formatTimestamp(dynamic timestamp) {
+    if (timestamp == null) return 'N/A';
+
+    try {
+      if (timestamp is Timestamp) {
+        final DateTime date = timestamp.toDate();
+        return '${date.day}/${date.month}/${date.year}';
+      }
+      return 'N/A';
+    } catch (e) {
+      return 'N/A';
+    }
+  }
+
   Widget _buildDriverSection(dynamic booking) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const CircleAvatar(
+        CircleAvatar(
           radius: 24,
-
-          /// backgroundColor: Colors.grey[200],
-          child: Icon(
-            Icons.drive_eta,
-            size: 32,
-          ),
+          backgroundImage: booking.driverDetails?['profileImageUrl'] != null
+              ? NetworkImage(booking.driverDetails['profileImageUrl'])
+              : null,
+          child: booking.driverDetails?['profileImageUrl'] == null
+              ? const Icon(Icons.drive_eta, size: 32)
+              : null,
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -192,8 +237,53 @@ class _DriverCancelledRideScreenState extends State<DriverCancelledRideScreen> {
               ),
               const SizedBox(height: 4),
               Text(
-                booking.driverDetails?['name'] ?? 'Unknown Driver',
-                //style: TextStyle(color: Colors.grey[600]),
+                booking.driverDetails?['name']?.toString().toUpperCase() ??
+                    'Unknown Driver',
+                style: const TextStyle(fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 4),
+              // Contact Number
+              Row(
+                children: [
+                  Icon(Icons.phone, size: 16, color: Colors.grey[600]),
+                  const SizedBox(width: 4),
+                  Text(
+                    booking.driverDetails?['contactNumber'] ?? 'N/A',
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              // Gender and Age
+              Row(
+                children: [
+                  Icon(Icons.person, size: 16, color: Colors.grey[600]),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${booking.driverDetails?['gender'] ?? 'N/A'} | ${booking.driverDetails?['age'] ?? 'N/A'} years',
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              // Experience
+              Row(
+                children: [
+                  Icon(Icons.work, size: 16, color: Colors.grey[600]),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${booking.driverDetails?['experienceYears'] ?? 'N/A'} years experience',
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              // Vehicle Preference
+              Row(
+                children: [
+                  Icon(Icons.directions_car, size: 16, color: Colors.grey[600]),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Drives: ${booking.driverDetails?['vehiclePreference'] ?? 'N/A'}',
+                  ),
+                ],
               ),
             ],
           ),

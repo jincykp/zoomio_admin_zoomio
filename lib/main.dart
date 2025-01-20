@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zoomio_adminzoomio/firebase_options.dart';
+import 'package:zoomio_adminzoomio/presentaions/all_rides/block_driver_screen.dart/block_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/all_rides/completed_ride_screens/completed_trip_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/all_rides/driver_cancelled_screens/driver_cancelled_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/all_rides/user_cancelled_screens/user_cancelled_provider.dart';
@@ -10,6 +11,7 @@ import 'package:zoomio_adminzoomio/presentaions/provider/signin_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/provider/signup_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/provider/theme_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/provider/vehicle_provider.dart';
+import 'package:zoomio_adminzoomio/presentaions/revenue_screens/revenue_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/signup_screen/sign_up.dart';
 import 'package:zoomio_adminzoomio/presentaions/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,6 +44,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => TripProvider()),
         ChangeNotifierProvider(create: (context) => CancelledTripProvider()),
         ChangeNotifierProvider(create: (context) => DriverCancelledProvider()),
+        ChangeNotifierProvider(create: (_) => RevenueProvider()),
+        ChangeNotifierProvider(create: (_) => DriverState())
         // Add other providers here if needed  CancelledTripProvider DriverCancelledProvider
       ],
       child: Consumer<ThemeProvider>(

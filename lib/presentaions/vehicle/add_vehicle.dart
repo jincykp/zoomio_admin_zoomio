@@ -43,7 +43,7 @@ class _VehicleAddScreenState extends State<VehicleAddScreen> {
   String? selectedVehicleType;
   String? selectedFuelType;
   String? selectedBrand;
-
+  final repository = VehicleRepository();
   // List of vehicle types
   final List<String> vehicleTypes = ['Car', 'Bike'];
 
@@ -488,51 +488,57 @@ class _VehicleAddScreenState extends State<VehicleAddScreen> {
                       text: "Add Vehicle",
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          Vehicle newVehicle = Vehicle(
-                            vehicleType: selectedVehicleType!,
-                            brand: selectedBrand!,
-                            registrationNumber:
-                                registrationNumberController.text,
-                            seatingCapacity:
-                                int.parse(seatingCapacityController.text),
-                            fuelType: selectedFuelType!,
-                            insurancePolicyNumber:
-                                insurancePolicyNumberController.text,
-                            insuranceExpiryDate: insuranceExpiryDate!,
-                            pollutionCertificateNumber:
-                                pollutionCertificateController.text,
-                            pollutionExpiryDate: pollutionExpiryDate!,
-                            baseFare: double.parse(baseFareController.text),
-                            waitingCharge:
-                                double.parse(waitingChargeController.text),
-                            perKilometerCharge:
-                                double.parse(perKilometerChargeController.text),
-                            vehicleImages:
-                                selectedVehicleImages, // Add uploaded image URLs
-                            documentImages:
-                                selectedDocumentImages, // Add uploaded document URLs
-                            aboutVehicle: aboutVehicleController
-                                .text, // Capture the aboutVehicle text
-                          );
+                          try {
+                            final newVehicle = Vehicle(
+                              vehicleType: selectedVehicleType!,
+                              brand: selectedBrand!,
+                              registrationNumber:
+                                  registrationNumberController.text,
+                              seatingCapacity:
+                                  int.parse(seatingCapacityController.text),
+                              fuelType: selectedFuelType!,
+                              insurancePolicyNumber:
+                                  insurancePolicyNumberController.text,
+                              insuranceExpiryDate: insuranceExpiryDate!,
+                              pollutionCertificateNumber:
+                                  pollutionCertificateController.text,
+                              pollutionExpiryDate: pollutionExpiryDate!,
+                              baseFare: double.parse(baseFareController.text),
+                              waitingCharge:
+                                  double.parse(waitingChargeController.text),
+                              perKilometerCharge: double.parse(
+                                  perKilometerChargeController.text),
+                              vehicleImages: selectedVehicleImages,
+                              documentImages: selectedDocumentImages,
+                              aboutVehicle: aboutVehicleController.text,
+                              status: 'available', // Set default status
+                            );
 
-                          Provider.of<VehicleProvider>(context, listen: false)
-                              .addVehicle(newVehicle);
+                            await Provider.of<VehicleProvider>(context,
+                                    listen: false)
+                                .addVehicle(newVehicle);
 
-                          await addVehicle(newVehicle);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                backgroundColor: Colors.green,
+                                content: Text('Vehicle added successfully!'),
+                              ),
+                            );
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              backgroundColor: Colors.green,
-                              content: Text('Vehicle added successfully!'),
-                            ),
-                          );
-
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HomeScreen(),
-                            ),
-                          );
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HomeScreen(),
+                              ),
+                            );
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.red,
+                                content: Text('Error adding vehicle: $e'),
+                              ),
+                            );
+                          }
                         }
                       },
                       backgroundColor: ThemeColors.primaryColor,

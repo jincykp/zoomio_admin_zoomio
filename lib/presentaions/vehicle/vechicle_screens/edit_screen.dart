@@ -587,8 +587,8 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                             vehicleImages:
                                 selectedVehicleImages, // Updated images
                             documentImages: selectedDocumentImages,
-                            aboutVehicle: aboutVehicleController
-                                .text, // Updated documents
+                            aboutVehicle: aboutVehicleController.text,
+                            status: '', // Updated documents
                           );
                           print("update pressed");
                           // Call the update method from the provider

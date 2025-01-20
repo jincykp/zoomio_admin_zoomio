@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:zoomio_adminzoomio/presentaions/all_rides/completed_ride_screens/completed_trip_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/all_rides/enhanced_trip.dart';
 
-class CompletedTripCard extends StatelessWidget {
+class CompletedTripCard extends StatefulWidget {
   final EnhancedTrip enhancedTrip;
 
-  const CompletedTripCard({
+  CompletedTripCard({
     Key? key,
     required this.enhancedTrip,
   }) : super(key: key);
 
+  @override
+  State<CompletedTripCard> createState() => _CompletedTripCardState();
+}
+
+class _CompletedTripCardState extends State<CompletedTripCard> {
   Future<void> _launchPhone(String phoneNumber) async {
     final Uri uri = Uri(scheme: 'tel', path: phoneNumber);
     if (await canLaunchUrl(uri)) {
@@ -21,9 +28,9 @@ class CompletedTripCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final trip = enhancedTrip;
-    final userDetails = enhancedTrip.userDetails;
-    final driverDetails = enhancedTrip.driverDetails;
+    final trip = widget.enhancedTrip;
+    final userDetails = widget.enhancedTrip.userDetails;
+    final driverDetails = widget.enhancedTrip.driverDetails;
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),

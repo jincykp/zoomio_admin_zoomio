@@ -220,7 +220,6 @@ class DriverManagementScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        //  color: Colors.grey.shade50,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -238,20 +237,20 @@ class DriverManagementScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: _buildStatItem(
-                  'Daily',
+                  'Today\'s Cancellations',
                   cancelCount,
-                  // cancelCount >= 2 ? Colors.red : Colors.black,
+                  //  subtitle: '',
                 ),
               ),
               const SizedBox(
                 width: 1,
                 height: 40,
-                // color: Colors.grey.shade300,
               ),
               Expanded(
                 child: _buildStatItem(
-                  'Total',
+                  'Total Cancellations',
                   totalCancellations,
+                  subtitle: 'All time',
                 ),
               ),
             ],
@@ -263,24 +262,35 @@ class DriverManagementScreen extends StatelessWidget {
 
   Widget _buildStatItem(
     String label,
-    int value,
-  ) {
+    int value, {
+    String? subtitle,
+  }) {
     return Column(
       children: [
         Text(
           label,
           style: const TextStyle(
-            //color: Colors.grey.shade600,
             fontSize: 12,
           ),
+          textAlign: TextAlign.center,
         ),
+        if (subtitle != null) ...[
+          Text(
+            subtitle,
+            style: TextStyle(
+              fontSize: 10,
+              color: Colors.grey.shade600,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
         const SizedBox(height: 4),
         Text(
           value.toString(),
-          style: const TextStyle(
-            //  color: valueColor,
+          style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
+            color: value >= 2 ? Colors.red : null,
           ),
         ),
       ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zoomio_adminzoomio/presentaions/styles/styles.dart';
 
 class StatisticsCard extends StatelessWidget {
   final String title;
@@ -40,9 +41,9 @@ class StatisticsCard extends StatelessWidget {
                       child: Text(
                         title,
                         style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                        ),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: ThemeColors.titleColor),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -59,6 +60,7 @@ class StatisticsCard extends StatelessWidget {
                     amount,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
+                      color: ThemeColors.titleColor,
                       fontSize: 16, // Further reduced font size
                     ),
                   ),
@@ -67,7 +69,7 @@ class StatisticsCard extends StatelessWidget {
                 Text(
                   subtitle,
                   style: const TextStyle(
-                    //color: Colors.black54,
+                    color: ThemeColors.titleColor,
                     fontSize: 12,
                   ),
                   maxLines: 1,

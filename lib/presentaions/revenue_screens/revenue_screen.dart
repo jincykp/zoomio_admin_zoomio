@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zoomio_adminzoomio/presentaions/revenue_screens/revenue_card.dart';
 import 'package:zoomio_adminzoomio/presentaions/revenue_screens/revenue_provider.dart';
-import 'package:zoomio_adminzoomio/presentaions/revenue_screens/stats_card.dart';
 import 'package:zoomio_adminzoomio/presentaions/styles/styles.dart';
 
 class RevenueScreen extends StatefulWidget {
@@ -35,59 +33,65 @@ class _RevenueScreenState extends State<RevenueScreen> {
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    StatsCard(
-                      title: 'Today\'s Stats',
-                      mainValue: '₹${provider.dailyRevenue.toStringAsFixed(2)}',
-                      subValue: provider.dailyTrips.toString(),
-                      icon: Icons.today,
-                    ),
-                    StatsCard(
-                      title: 'Weekly Stats',
-                      mainValue:
-                          '₹${provider.weeklyRevenue.toStringAsFixed(2)}',
-                      subValue: provider.weeklyTrips.toString(),
-                      icon: Icons.calendar_view_week,
-                    ),
-                    StatsCard(
-                      title: 'Monthly Stats',
-                      mainValue:
-                          '₹${provider.monthlyRevenue.toStringAsFixed(2)}',
-                      subValue: provider.monthlyTrips.toString(),
-                      icon: Icons.calendar_month,
-                    ),
-                    // Summary Card
+                    // Earnings Split Description
                     Card(
-                      elevation: 4,
-                      margin: const EdgeInsets.all(8),
+                      elevation: 3,
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 4),
                       child: Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(12),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              'Trip Summary',
+                              'Earnings Split',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 8),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                _buildTripSummary('Daily', provider.dailyTrips),
-                                _buildTripSummary(
-                                    'Weekly', provider.weeklyTrips),
-                                _buildTripSummary(
-                                    'Monthly', provider.monthlyTrips),
+                                _buildSplitLabel('Driver', '40%'),
+                                _buildSplitLabel('Company', '60%'),
                               ],
                             ),
                           ],
                         ),
                       ),
+                    ),
+
+                    // Stats Sections
+                    _buildEarningsSection(
+                      'Today\'s Stats',
+                      provider.dailyRevenue,
+                      provider.dailyDriverEarnings,
+                      provider.dailyAdminEarnings,
+                      provider.dailyTrips,
+                      Icons.today,
+                    ),
+
+                    _buildEarningsSection(
+                      'Weekly Stats',
+                      provider.weeklyRevenue,
+                      provider.weeklyDriverEarnings,
+                      provider.weeklyAdminEarnings,
+                      provider.weeklyTrips,
+                      Icons.calendar_view_week,
+                    ),
+
+                    _buildEarningsSection(
+                      'Monthly Stats',
+                      provider.monthlyRevenue,
+                      provider.monthlyDriverEarnings,
+                      provider.monthlyAdminEarnings,
+                      provider.monthlyTrips,
+                      Icons.calendar_month,
                     ),
                   ],
                 ),
@@ -99,21 +103,105 @@ class _RevenueScreenState extends State<RevenueScreen> {
     );
   }
 
-  Widget _buildTripSummary(String label, int count) {
+  Widget _buildSplitLabel(String label, String percentage) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        '$label ($percentage)',
+        style: TextStyle(
+          fontSize: 12,
+          color: Colors.grey.shade800,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEarningsSection(
+    String title,
+    double totalRevenue,
+    double driverEarnings,
+    double adminEarnings,
+    int trips,
+    IconData icon,
+  ) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Card(
+          elevation: 3,
+          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Icon(icon, color: ThemeColors.primaryColor, size: 20),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildEarningColumn(
+                          'Total', '₹${totalRevenue.toStringAsFixed(2)}',
+                          isTotal: true),
+                      SizedBox(width: constraints.maxWidth * 0.1),
+                      _buildEarningColumn(
+                          'Driver', '₹${driverEarnings.toStringAsFixed(2)}'),
+                      SizedBox(width: constraints.maxWidth * 0.1),
+                      _buildEarningColumn(
+                          'Company', '₹${adminEarnings.toStringAsFixed(2)}'),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '$trips Trips',
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildEarningColumn(String label, String value,
+      {bool isTotal = false}) {
     return Column(
       children: [
         Text(
-          count.toString(),
-          style: const TextStyle(
-            fontSize: 24,
+          value,
+          style: TextStyle(
+            fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: ThemeColors.primaryColor,
+            color: isTotal ? ThemeColors.primaryColor : Colors.black87,
           ),
         ),
         Text(
           label,
           style: const TextStyle(
-            fontSize: 14,
+            fontSize: 11,
             color: Colors.grey,
           ),
         ),

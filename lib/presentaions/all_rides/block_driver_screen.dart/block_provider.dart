@@ -179,45 +179,6 @@ class DriverState extends ChangeNotifier {
     }
   }
 
-  // Future<void> resetDailyCancellations() async {
-  //   try {
-  //     final statsSnapshot = await _database.child('driverStats').get();
-  //     if (statsSnapshot.exists) {
-  //       final Map<String, dynamic> realtimeUpdates = {};
-  //       final stats = Map<String, dynamic>.from(statsSnapshot.value as Map);
-
-  //       // Prepare batch for Firestore updates
-  //       final batch = _firestore.batch();
-
-  //       for (var driverId in stats.keys) {
-  //         // Prepare Realtime Database updates
-  //         realtimeUpdates['driverStats/$driverId/dailyCancellations'] = 0;
-  //         realtimeUpdates['driverStats/$driverId/lastStatsReset'] =
-  //             ServerValue.timestamp;
-
-  //         // Prepare Firestore updates
-  //         final driverRef =
-  //             _firestore.collection('driverProfiles').doc(driverId);
-  //         batch.update(driverRef, {
-  //           'dailyCancellations': 0,
-  //           'lastStatsReset': FieldValue.serverTimestamp(),
-  //         });
-  //       }
-
-  //       // Execute both updates
-  //       await Future.wait([
-  //         _database.update(realtimeUpdates),
-  //         batch.commit(),
-  //       ]);
-
-  //       notifyListeners();
-  //     }
-  //   } catch (e) {
-  //     print('Error resetting daily cancellations: $e');
-  //     throw Exception('Failed to reset daily cancellations: $e');
-  //   }
-  // }
-
   // Helper method to verify database consistency
   Future<void> verifyDatabaseConsistency(String driverId) async {
     try {

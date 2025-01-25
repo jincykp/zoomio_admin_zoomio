@@ -135,8 +135,8 @@ class DriverManagementScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              _buildActionButton(
-                                  driverState, driverId, isBlocked),
+                              _buildActionButton(context, driverState, driverId,
+                                  isBlocked, driverName),
                             ],
                           ),
                           const Divider(height: 24),
@@ -196,10 +196,11 @@ class DriverManagementScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButton(
-      DriverState driverState, String driverId, bool isBlocked) {
+  Widget _buildActionButton(BuildContext context, DriverState driverState,
+      String driverId, bool isBlocked, String driverName) {
     return ElevatedButton.icon(
-      onPressed: () => driverState.toggleDriverBlock(driverId, isBlocked),
+      onPressed: () => _showBlockConfirmationDialog(
+          context, driverState, driverId, isBlocked, driverName),
       style: ElevatedButton.styleFrom(
         backgroundColor: isBlocked ? Colors.green.shade50 : Colors.red.shade50,
         foregroundColor: isBlocked ? Colors.green : Colors.red,
@@ -210,6 +211,46 @@ class DriverManagementScreen extends StatelessWidget {
       ),
       icon: Icon(isBlocked ? Icons.lock_open : Icons.lock),
       label: Text(isBlocked ? 'Unblock' : 'Block'),
+    );
+  }
+
+  void _showBlockConfirmationDialog(
+      BuildContext context,
+      DriverState driverState,
+      String driverId,
+      bool isBlocked,
+      String driverName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text(isBlocked ? 'Unblock Driver' : 'Block Driver'),
+          content: Text(isBlocked
+              ? 'Are you sure you want to unblock $driverName?'
+              : 'Are you sure you want to block $driverName? This will prevent them from receiving rides.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isBlocked ? Colors.green : Colors.red,
+              ),
+              child: Text(isBlocked ? 'Unblock' : 'Block'),
+              onPressed: () {
+                // Close the dialog first
+                Navigator.of(dialogContext).pop();
+
+                // Perform the block/unblock action
+                driverState.toggleDriverBlock(driverId, isBlocked);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

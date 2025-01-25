@@ -9,6 +9,14 @@ class RevenueProvider with ChangeNotifier {
   double _weeklyRevenue = 0;
   double _monthlyRevenue = 0;
 
+  double _dailyDriverEarnings = 0;
+  double _weeklyDriverEarnings = 0;
+  double _monthlyDriverEarnings = 0;
+
+  double _dailyAdminEarnings = 0;
+  double _weeklyAdminEarnings = 0;
+  double _monthlyAdminEarnings = 0;
+
   int _dailyTrips = 0;
   int _weeklyTrips = 0;
   int _monthlyTrips = 0;
@@ -19,6 +27,15 @@ class RevenueProvider with ChangeNotifier {
   double get dailyRevenue => _dailyRevenue;
   double get weeklyRevenue => _weeklyRevenue;
   double get monthlyRevenue => _monthlyRevenue;
+
+  double get dailyDriverEarnings => _dailyDriverEarnings;
+  double get weeklyDriverEarnings => _weeklyDriverEarnings;
+  double get monthlyDriverEarnings => _monthlyDriverEarnings;
+
+  double get dailyAdminEarnings => _dailyAdminEarnings;
+  double get weeklyAdminEarnings => _weeklyAdminEarnings;
+  double get monthlyAdminEarnings => _monthlyAdminEarnings;
+
   int get dailyTrips => _dailyTrips;
   int get weeklyTrips => _weeklyTrips;
   int get monthlyTrips => _monthlyTrips;
@@ -35,10 +52,16 @@ class RevenueProvider with ChangeNotifier {
 
   Future<void> fetchData() async {
     try {
-      // Reset counters
+      // Reset all counters
       _dailyRevenue = 0;
       _weeklyRevenue = 0;
       _monthlyRevenue = 0;
+      _dailyDriverEarnings = 0;
+      _weeklyDriverEarnings = 0;
+      _monthlyDriverEarnings = 0;
+      _dailyAdminEarnings = 0;
+      _weeklyAdminEarnings = 0;
+      _monthlyAdminEarnings = 0;
       _dailyTrips = 0;
       _weeklyTrips = 0;
       _monthlyTrips = 0;
@@ -83,17 +106,27 @@ class RevenueProvider with ChangeNotifier {
             return;
           }
 
+          // Calculate driver and admin earnings
+          final driverEarnings = totalFare * 0.4;
+          final adminEarnings = totalFare * 0.6;
+
           // Update counters based on date
           if (bookingDate.isAfter(today)) {
             _dailyRevenue += totalFare;
+            _dailyDriverEarnings += driverEarnings;
+            _dailyAdminEarnings += adminEarnings;
             _dailyTrips++;
           }
           if (bookingDate.isAfter(weekStart)) {
             _weeklyRevenue += totalFare;
+            _weeklyDriverEarnings += driverEarnings;
+            _weeklyAdminEarnings += adminEarnings;
             _weeklyTrips++;
           }
           if (bookingDate.isAfter(monthStart)) {
             _monthlyRevenue += totalFare;
+            _monthlyDriverEarnings += driverEarnings;
+            _monthlyAdminEarnings += adminEarnings;
             _monthlyTrips++;
           }
         } catch (e) {
@@ -102,9 +135,12 @@ class RevenueProvider with ChangeNotifier {
       });
 
       print('Fetched Data:');
-      print('Daily Revenue: $_dailyRevenue, Trips: $_dailyTrips');
-      print('Weekly Revenue: $_weeklyRevenue, Trips: $_weeklyTrips');
-      print('Monthly Revenue: $_monthlyRevenue, Trips: $_monthlyTrips');
+      print(
+          'Daily Revenue: $_dailyRevenue, Driver: $_dailyDriverEarnings, Admin: $_dailyAdminEarnings, Trips: $_dailyTrips');
+      print(
+          'Weekly Revenue: $_weeklyRevenue, Driver: $_weeklyDriverEarnings, Admin: $_weeklyAdminEarnings, Trips: $_weeklyTrips');
+      print(
+          'Monthly Revenue: $_monthlyRevenue, Driver: $_monthlyDriverEarnings, Admin: $_monthlyAdminEarnings, Trips: $_monthlyTrips');
 
       notifyListeners();
     } catch (e) {

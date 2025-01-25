@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:zoomio_adminzoomio/presentaions/all_rides/block_driver_screen.dart/block_the_driver.dart';
+import 'package:zoomio_adminzoomio/presentaions/all_rides/cancelled_rides_screens/driver_management_screen.dart';
 import 'package:zoomio_adminzoomio/presentaions/all_rides/tab_controller_screen.dart';
 import 'package:zoomio_adminzoomio/presentaions/driver_screens/drivers_list.dart';
 import 'package:zoomio_adminzoomio/presentaions/provider/theme_provider.dart';
@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       StatisticsCard(
                         title: 'Daily Earnings',
                         amount:
-                            '₹${revenueProvider.dailyRevenue.toStringAsFixed(2)}',
+                            '₹${(revenueProvider.dailyRevenue * 0.6).toStringAsFixed(2)}',
                         subtitle: '${revenueProvider.dailyTrips} rides',
                         backgroundColor: Colors.blue[100]!,
                         icon: Icons.today,
@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       StatisticsCard(
                         title: 'Weekly Earnings',
                         amount:
-                            '₹${revenueProvider.weeklyRevenue.toStringAsFixed(2)}',
+                            '₹${(revenueProvider.weeklyRevenue * 0.6).toStringAsFixed(2)}',
                         subtitle: '${revenueProvider.weeklyTrips} rides',
                         backgroundColor: Colors.green[100]!,
                         icon: Icons.calendar_view_week,
@@ -107,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       StatisticsCard(
                         title: 'Monthly Earnings',
                         amount:
-                            '₹${revenueProvider.monthlyRevenue.toStringAsFixed(2)}',
+                            '₹${(revenueProvider.monthlyRevenue * 0.6).toStringAsFixed(2)}',
                         subtitle: '${revenueProvider.monthlyTrips} rides',
                         backgroundColor: Colors.orange[100]!,
                         icon: Icons.calendar_month,
@@ -115,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       StatisticsCard(
                         title: 'Average Per Ride',
                         amount:
-                            '₹${_calculateAverage(revenueProvider.monthlyRevenue, revenueProvider.monthlyTrips)}',
+                            '₹${_calculateAverage(revenueProvider.monthlyRevenue * 0.6, revenueProvider.monthlyTrips)}',
                         subtitle: 'This month',
                         backgroundColor: Colors.purple[100]!,
                         icon: Icons.auto_graph,

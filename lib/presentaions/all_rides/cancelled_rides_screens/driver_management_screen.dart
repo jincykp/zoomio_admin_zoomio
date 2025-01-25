@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:zoomio_adminzoomio/presentaions/all_rides/block_driver_screen.dart/block_provider.dart';
+import 'package:zoomio_adminzoomio/presentaions/all_rides/cancelled_rides_screens/driver_management_provider.dart';
 import 'package:zoomio_adminzoomio/presentaions/styles/styles.dart';
 
 class DriverManagementScreen extends StatelessWidget {
